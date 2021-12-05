@@ -1,0 +1,4 @@
+.wrapper-space-of-products{
+  display: flex;
+  flex-wrap: wrap;
+}

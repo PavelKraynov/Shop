@@ -4,10 +4,12 @@ import cors from 'cors'
 import sockjs from 'sockjs'
 import { renderToStaticNodeStream } from 'react-dom/server'
 import React from 'react'
-
+import axios from 'axios'
 import cookieParser from 'cookie-parser'
 import config from './config'
 import Html from '../client/html'
+
+const { writeFile, readFile } = require('fs').promises
 
 require('colors')
 
@@ -34,7 +36,28 @@ const middleware = [
 
 middleware.forEach((it) => server.use(it))
 
-server.use('/api/', (req, res) => {
+const url =
+  'https://raw.githubusercontent.com/ovasylenko/skillcrcuial-ecommerce-test-data/master/data.json'
+
+server.get('/api/v1/goods', async (req, res) => {
+  const allGoods = await readFile(`${__dirname}/goods.json`, { encoding: 'utf8' })
+    .then((goods) => JSON.parse(goods))
+    .catch(async () => {
+      const goods = await axios(url).then((result) => result.data)
+      return writeFile(`${__dirname}/goods.json`, JSON.stringify(goods), { encoding: 'utf8' })
+        .then((data) => data)
+        .catch((err) => err)
+    })
+  res.send(allGoods)
+})
+
+const urlValue = 'https://api.exchangerate.host/latest?base=USD&symbols=USD,EUR,CAD'
+server.get('/api/v1/base', async (req, res) => {
+  const baseCurrency = await axios(urlValue).then((result) => result.data)
+  res.send(baseCurrency)
+})
+
+server.use('/api/goods', (req, res) => {
   res.status(404)
   res.end()
 })

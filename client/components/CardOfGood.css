@@ -1,0 +1,31 @@
+
+.card{
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: deepskyblue;
+  margin: 20px;
+  width: 200px;
+  height: 200px;
+  border-radius: 5px;
+}
+
+
+.card__row{
+  display: flex;
+  justify-content: space-evenly;
+
+}
+
+.card__image{
+  margin: 5px;
+  width: 50px;
+  height: 100px
+}
+
+.button-add-product{
+  background: moccasin;
+  border-radius: 0.3rem;
+}
