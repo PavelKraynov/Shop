@@ -24,7 +24,7 @@ const Main = () => {
     <div>
       <Head title="Hello" />
       <div className="wrapper-space-of-products">
-      {listOfProducts.map((objOfProduct) => {
+      {Object.values(listOfProducts).map((objOfProduct) => {
         const idForKey = Math.random().toString(32).substr(2, 12)
         return (
           <div key={idForKey}>

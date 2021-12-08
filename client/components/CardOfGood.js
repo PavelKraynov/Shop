@@ -2,7 +2,6 @@ import React from 'react'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { addProducts } from '../redux/reducers/add_products'
-// import {addToBusketFunc} from '../redux/reducers/add_products'
 import './CardOfGood.css'
 
 
@@ -13,11 +12,10 @@ const CardOfGood = ({ title, image, price, id}) => {
   const { addProductsList } = useSelector((s) => s.add_products)
   const dispatch = useDispatch()
 
-  const resultPrice = price * currencyOfProduct[1].toFixed(2)
+  const resultPrice = (price * currencyOfProduct[1]).toFixed(2)
 
 const onClick = () => {
   dispatch(addProducts(id, price))
-  // dispatch(addToBusketFunc(id))
 }
     return (
       <div className="card">

@@ -1,10 +1,12 @@
 const ADD_PRODUCTS = 'ADD_PRODUCTS'
-const ADD_PRODUCTS_TO_BASKET = 'ADD_PRODUCTS_TO_BASKET'
+
+const DELETED_PRODUCTS_TO_BASKET = 'DELETED_PRODUCTS_TO_BASKET'
+
 const initialState = {
   addProductsList: {},
   allAmount: 0,
   allProductPrice: 0,
-  busketProducts:[]
+  basketProducts: {}
 }
 
 export default (state = initialState, action) => {
@@ -12,15 +14,18 @@ export default (state = initialState, action) => {
     case ADD_PRODUCTS: {
       return {
         ...state,
-        addProductsList: action.payLoad,
+        addProductsList: action.payLoad.addProductsList,
         allAmount: state.allAmount + 1,
-        allProductPrice: state.allProductPrice + action.payLoad.allProductPrice
+        allProductPrice: state.allProductPrice + action.payLoad.price
       }
     }
-    case ADD_PRODUCTS_TO_BASKET: {
+
+    case DELETED_PRODUCTS_TO_BASKET: {
       return {
         ...state,
-        busketProducts: action.busketProducts
+        addProductsList: action.dellProducts,
+        allAmount: state.allAmount - 1,
+        allProductPrice: state.allProductPrice - action.dellProducts.allProductPrice
       }
     }
     default:
@@ -28,30 +33,50 @@ export default (state = initialState, action) => {
   }
 }
 
-export function addProducts(id, resultPrice) {
+export function addProducts(id) {
   return (dispatch, getState) => {
+    const productsList = getState().products.allProducts
     const { addProductsList } = getState().add_products
-    const totalAmount =
-      typeof addProductsList[id] === 'undefined' ? 1 : addProductsList[id].amount + 1
+    const totalAmount = typeof addProductsList[id] === 'undefined' ? 1 : addProductsList[id].amount + 1
+      const { price } = productsList[id]
+      console.log(price)
     return dispatch({
       type: ADD_PRODUCTS,
       payLoad: {
-        ...addProductsList,
-        allProductPrice: resultPrice,
-        [id]: { id, amount: totalAmount }
+        addProductsList: {
+          ...addProductsList,
+          [id]: { amount: totalAmount }
+        },
+        price
       }
     })
   }
 }
 
-export function addToBusketFunc(id) {
+export function deletedProdFunc(idProdDel, delPrice) {
   return (dispatch, getState) => {
-    const storeId = getState().products.allProduct.id
-    const filterAdd = storeId.filter((it) => {
-      if (it.indexOf(id) > 0) {
-        return dispatch({ type: ADD_PRODUCTS_TO_BASKET, busketProducts: filterAdd })
-      }
-      return null
+    const { addProductsList } = getState().add_products
+    // const { amountProduct } = getState().add_products.addProductsList[idProdDel].amount
+    console.log(Object.entries(addProductsList))
+    console.log(idProdDel, delPrice)
+    const dellAmount = Object.entries(addProductsList).reduce(
+      (acc, rec) => {
+        if (rec[1].id === idProdDel) {
+          return {
+            ...acc,
+            [idProdDel]: {
+
+              amount: addProductsList[idProdDel].amount - 1
+            }
+          }
+        }
+        return acc
+      },
+      { addProductsList }
+    )
+    return dispatch({
+      type: DELETED_PRODUCTS_TO_BASKET,
+      dellProducts: dellAmount
     })
   }
 }

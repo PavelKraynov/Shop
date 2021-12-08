@@ -1,0 +1,11 @@
+.product-in-basket {
+  display:flex;
+  align-items: center;
+}
+
+.product-in-basket-all-price {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: lightslategrey;
+}

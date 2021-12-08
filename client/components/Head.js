@@ -70,4 +70,4 @@ const clickSortByPrice = () => {
   )
   }
 
-export default Head
+export default React.memo(Head)
