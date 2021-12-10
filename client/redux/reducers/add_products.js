@@ -1,12 +1,13 @@
 const ADD_PRODUCTS = 'ADD_PRODUCTS'
 
-const DELETED_PRODUCTS_TO_BASKET = 'DELETED_PRODUCTS_TO_BASKET'
+const DELETED_AMOUNT_PRODUCTS_TO_BASKET = 'DELETED_AMOUNT_PRODUCTS_TO_BASKET'
+const DELETED_PRODUCTS = 'DELETED_PRODUCTS'
+
 
 const initialState = {
   addProductsList: {},
   allAmount: 0,
   allProductPrice: 0,
-  basketProducts: {}
 }
 
 export default (state = initialState, action) => {
@@ -20,12 +21,20 @@ export default (state = initialState, action) => {
       }
     }
 
-    case DELETED_PRODUCTS_TO_BASKET: {
+    case DELETED_AMOUNT_PRODUCTS_TO_BASKET: {
       return {
         ...state,
-        addProductsList: action.dellProducts,
+        addProductsList: action.dellProductsAmount.dellAmount,
         allAmount: state.allAmount - 1,
-        allProductPrice: state.allProductPrice - action.dellProducts.allProductPrice
+        allProductPrice: state.allProductPrice - action.dellProductsAmount.price
+      }
+    }
+    case DELETED_PRODUCTS: {
+      return {
+        ...state,
+        addProductsList: action.addProductsList,
+        allAmount: state.allAmount -1 ,
+        allProductPrice: state.allProductPrice - action.price
       }
     }
     default:
@@ -37,7 +46,8 @@ export function addProducts(id) {
   return (dispatch, getState) => {
     const productsList = getState().products.allProducts
     const { addProductsList } = getState().add_products
-    const totalAmount = typeof addProductsList[id] === 'undefined' ? 1 : addProductsList[id].amount + 1
+    const totalAmount = typeof addProductsList[id] === 'undefined' ? 1 : addProductsList[id].amount += 1
+
       const { price } = productsList[id]
       console.log(price)
     return dispatch({
@@ -53,30 +63,31 @@ export function addProducts(id) {
   }
 }
 
-export function deletedProdFunc(idProdDel, delPrice) {
+export function deletedProdFunc(id) {
   return (dispatch, getState) => {
-    const { addProductsList } = getState().add_products
-    // const { amountProduct } = getState().add_products.addProductsList[idProdDel].amount
-    console.log(Object.entries(addProductsList))
-    console.log(idProdDel, delPrice)
-    const dellAmount = Object.entries(addProductsList).reduce(
-      (acc, rec) => {
-        if (rec[1].id === idProdDel) {
-          return {
-            ...acc,
-            [idProdDel]: {
+    const { addProductsList, allAmount } = getState().add_products
+    const productsList = getState().products.allProducts
+    const dellAmount = { ...addProductsList, [id]: { amount: addProductsList[id]?.amount - 1 } }
 
-              amount: addProductsList[idProdDel].amount - 1
-            }
-          }
+    const { price } = productsList[id]
+    console.log('allAmount', allAmount)
+    if (dellAmount[id].amount >= 1){
+      return dispatch({
+        type: DELETED_AMOUNT_PRODUCTS_TO_BASKET,
+        dellProductsAmount: {
+          dellAmount,
+          price
         }
-        return acc
-      },
-      { addProductsList }
+      })
+
+    }
+    return (
+      delete addProductsList[id],
+      dispatch({
+        type: DELETED_PRODUCTS,
+        addProductsList: {...addProductsList},
+        price
+      })
     )
-    return dispatch({
-      type: DELETED_PRODUCTS_TO_BASKET,
-      dellProducts: dellAmount
-    })
   }
 }

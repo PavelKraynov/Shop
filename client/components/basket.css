@@ -1,6 +1,7 @@
-.product-in-basket {
+.table-basket {
   display:flex;
   align-items: center;
+  background: rgb(219, 225, 238);
 }
 
 .product-in-basket-all-price {
@@ -8,4 +9,22 @@
   align-items: center;
   justify-content: center;
   background: lightslategrey;
+}
+
+.product-table-wrapper{
+  /* width: 1000px; */
+  display: flex;
+ background: rgb(233, 224, 221);
+ justify-content: space-evenly;
+
+}
+.product-table-wrapper__table{
+width: 800px;
+}
+.product-table-wrapper__thead{
+  background: rgb(160, 161, 156);
+}
+
+.tr-img-product{
+  width: 4rem;
 }

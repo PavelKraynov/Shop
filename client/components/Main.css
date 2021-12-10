@@ -1,4 +1,7 @@
 .wrapper-space-of-products{
   display: flex;
   flex-wrap: wrap;
+  background: rgb(224, 210, 206);
+  height: 100vh;
+
 }

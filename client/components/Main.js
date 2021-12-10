@@ -16,10 +16,6 @@ const Main = () => {
     dispatch(AllProductFromServer())
   },[])
 
-
-  // useEffect(() => {
-  //   dispatch(functionOfGettingCurrency())
-  // }, [])
   return (
     <div>
       <Head title="Hello" />

@@ -13,14 +13,18 @@ const Head = () => {
   const dispatch = useDispatch()
 
   const { allAmount , allProductPrice} = useSelector((s) => s.add_products)
-  const { currencyOfProduct } = useSelector((store) => store.products)
+  const { currencyOfProduct, order } = useSelector((store) => store.products)
+
+
+const moneyValue = ['USD', 'EUR', 'CAD']
+
 const onClickButtonForCurrencyPrice = (money) => {
  return dispatch(functionOfGettingCurrency(money))
 }
 
 
-const clickSortByPrice = () => {
-  return dispatch(functionSortByPrice())
+const clickSortByPrice = (price, orderSorted ) => {
+  return dispatch(functionSortByPrice(price, orderSorted * -1))
 }
   return (
     <div className="head-wrapper">
@@ -28,25 +32,18 @@ const clickSortByPrice = () => {
         <Link to="/">Shop</Link>
       </div>
       <div className="head-wrapper__exchange">
-        <div className="head-wrapper__exchange-button">
-          <button onClick={() => onClickButtonForCurrencyPrice('USD')} type="button">
-            USD
-          </button>
-        </div>
-        <div className="head-wrapper__exchange-button">
-          <button onClick={() => onClickButtonForCurrencyPrice('EUR')} type="button">
-            EUR
-          </button>
-        </div>
-        <div className="head-wrapper__exchange-button">
-          <button onClick={() => onClickButtonForCurrencyPrice('CAD')} type="button">
-            CAD
-          </button>
-        </div>
+          {moneyValue.map(it => {
+            return (
+              <button key={it} type='button'
+                className="head-wrapper__exchange-button"
+                onClick={() => onClickButtonForCurrencyPrice(it)}
+              >{it}</button>
+            )
+          })}
       </div>
       <div className="head-wrapper__sort">
         <button
-          onClick={clickSortByPrice}
+          onClick={()=> clickSortByPrice('price', order)}
           className="head-wrapper__sort-button"
           id="sort-price"
           type="button"
@@ -57,13 +54,11 @@ const clickSortByPrice = () => {
           Sort-name
         </button>
       </div>
-      <div>
-        amount: {allAmount} All price: {(allProductPrice * currencyOfProduct[1]).toFixed(2)} {' '}
+      <div className="head-wrapper__price-with-button">
+        amount: {allAmount} All price: {(allProductPrice * currencyOfProduct[1]).toFixed(2)}{' '}
         {currencyOfProduct[0]}
-        <Link to="/basket">
-          <span className="head-wrapper__basket" id="order-count">
-            basket
-          </span>
+        <Link className="head-wrapper__basket-button" to="/basket">
+          <span id="order-count">basket</span>
         </Link>
       </div>
     </div>
