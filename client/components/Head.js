@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 
 import './Head.css'
 
-import { functionOfGettingCurrency, functionSortByPrice } from '../redux/reducers/products'
+import { functionOfGettingCurrency, functionSort } from '../redux/reducers/products'
 
 const Head = () => {
 
@@ -23,8 +23,8 @@ const onClickButtonForCurrencyPrice = (money) => {
 }
 
 
-const clickSortByPrice = (price, orderSorted ) => {
-  return dispatch(functionSortByPrice(price, orderSorted * -1))
+const clickSortByPriceOrName = (price, orderSorted ) => {
+  return dispatch(functionSort(price, orderSorted * -1))
 }
   return (
     <div className="head-wrapper">
@@ -32,25 +32,34 @@ const clickSortByPrice = (price, orderSorted ) => {
         <Link to="/">Shop</Link>
       </div>
       <div className="head-wrapper__exchange">
-          {moneyValue.map(it => {
-            return (
-              <button key={it} type='button'
-                className="head-wrapper__exchange-button"
-                onClick={() => onClickButtonForCurrencyPrice(it)}
-              >{it}</button>
-            )
-          })}
+        {moneyValue.map((it) => {
+          return (
+            <button
+              key={it}
+              type="button"
+              className="head-wrapper__exchange-button"
+              onClick={() => onClickButtonForCurrencyPrice(it)}
+            >
+              {it}
+            </button>
+          )
+        })}
       </div>
       <div className="head-wrapper__sort">
         <button
-          onClick={()=> clickSortByPrice('price', order)}
+          onClick={() => clickSortByPriceOrName('price', order)}
           className="head-wrapper__sort-button"
           id="sort-price"
           type="button"
         >
           Sort-price
         </button>
-        <button className="head-wrapper__sort-button" id="sort-name" type="button">
+        <button
+          onClick={() => clickSortByPriceOrName('name', order)}
+          className="head-wrapper__sort-button"
+          id="sort-name"
+          type="button"
+        >
           Sort-name
         </button>
       </div>

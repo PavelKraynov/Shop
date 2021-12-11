@@ -77,14 +77,22 @@ export function functionOfGettingCurrency(money) {
   }
 }
 
-export function functionSortByPrice(price, order) {
+export function functionSort(price, order) {
   return (dispatch, getState) => {
     const store = getState()
     console.log(order)
     const arrayOfAllProducts = store.products.allProducts
-    const sortArrayOfPrice = Object.values(arrayOfAllProducts).sort((prev, next) => order*(prev.price - next.price))
+
+    const sortArrayOfPrice = Object.values(arrayOfAllProducts).sort(
+      (prev, next) => {
+        if(price === 'price'){
+        return order * (prev.price - next.price)
+        }
+        return order * prev.title.localeCompare(next.title)
+      }
+    )
     const objSortArray = sortArrayOfPrice.reduce((acc, product) => {
-      return {...acc, [product.id]: product}
+      return { ...acc, [product.id]: product }
     }, {})
     return dispatch({ type: SORT_BY_PRICE, resultOfSortArray: objSortArray, order })
   }
