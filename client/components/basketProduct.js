@@ -14,6 +14,7 @@ const BasketProduct = ({ data }) => {
             <th>Remove</th>
             <th>Amount</th>
             <th>Add Product</th>
+            <th>Remove All</th>
           </tr>
         </thead>
         <tbody>

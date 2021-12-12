@@ -6,15 +6,14 @@ import './Head.css'
 
 import { functionOfGettingCurrency, functionSort } from '../redux/reducers/products'
 
-const Head = () => {
+const Head = (props) => {
 
-
-
+console.log(props)
   const dispatch = useDispatch()
 
-  const { allAmount , allProductPrice} = useSelector((s) => s.add_products)
+  const { allAmount, allProductPrice } = useSelector((s) => s.add_products)
   const { currencyOfProduct, order } = useSelector((store) => store.products)
-
+const allPrice = (allProductPrice * currencyOfProduct[1]).toFixed(2)
 
 const moneyValue = ['USD', 'EUR', 'CAD']
 
@@ -64,8 +63,7 @@ const clickSortByPriceOrName = (price, orderSorted ) => {
         </button>
       </div>
       <div className="head-wrapper__price-with-button">
-        amount: {allAmount} All price: {(allProductPrice * currencyOfProduct[1]).toFixed(2)}{' '}
-        {currencyOfProduct[0]}
+        amount: {allAmount} All price: {allPrice} {currencyOfProduct[0]}
         <Link className="head-wrapper__basket-button" to="/basket">
           <span id="order-count">basket</span>
         </Link>

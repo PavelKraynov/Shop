@@ -12,14 +12,14 @@ const Basket = () => {
   const { addProductsList } = useSelector((s) => s.add_products)
   const { currencyOfProduct } = useSelector((store) => store.products)
 
-
+ const allPrice = (allProductPrice * currencyOfProduct[1]).toFixed(2)
   return (
     <div>
       <Head />
       <BasketProduct data={Object.keys(addProductsList)} />
       <hr />
       <div className="product-in-basket-all-price">
-        all for all product {allProductPrice} {currencyOfProduct[0]}
+        all for all product {allPrice} {currencyOfProduct[0]}
       </div>
     </div>
   )

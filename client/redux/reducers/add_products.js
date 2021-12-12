@@ -2,6 +2,7 @@ const ADD_PRODUCTS = 'ADD_PRODUCTS'
 
 const DELETED_AMOUNT_PRODUCTS_TO_BASKET = 'DELETED_AMOUNT_PRODUCTS_TO_BASKET'
 const DELETED_PRODUCTS = 'DELETED_PRODUCTS'
+const DEL_ALL_POSITION = 'DEL_ALL_POSITION'
 
 
 const initialState = {
@@ -33,7 +34,16 @@ export default (state = initialState, action) => {
       return {
         ...state,
         addProductsList: action.addProductsList,
-        allAmount: state.allAmount -1 ,
+        allAmount: state.allAmount - 1,
+        allProductPrice: state.allProductPrice - action.price
+      }
+    }
+    case DEL_ALL_POSITION: {
+      console.log('amount', action.amount)
+      return {
+        ...state,
+        addProductsList: action.addProductsList,
+        allAmount: state.allAmount - action.amount,
         allProductPrice: state.allProductPrice - action.price
       }
     }
@@ -49,7 +59,6 @@ export function addProducts(id) {
     const totalAmount = typeof addProductsList[id] === 'undefined' ? 1 : addProductsList[id].amount += 1
 
       const { price } = productsList[id]
-      console.log(price)
     return dispatch({
       type: ADD_PRODUCTS,
       payLoad: {
@@ -65,12 +74,11 @@ export function addProducts(id) {
 
 export function deletedProdFunc(id) {
   return (dispatch, getState) => {
-    const { addProductsList, allAmount } = getState().add_products
+    const { addProductsList } = getState().add_products
     const productsList = getState().products.allProducts
     const dellAmount = { ...addProductsList, [id]: { amount: addProductsList[id]?.amount - 1 } }
 
     const { price } = productsList[id]
-    console.log('allAmount', allAmount)
     if (dellAmount[id].amount >= 1){
       return dispatch({
         type: DELETED_AMOUNT_PRODUCTS_TO_BASKET,
@@ -87,6 +95,24 @@ export function deletedProdFunc(id) {
         type: DELETED_PRODUCTS,
         addProductsList: {...addProductsList},
         price
+      })
+    )
+  }
+}
+
+export function deletedProdPosition(id) {
+  return (dispatch, getState) => {
+    const { addProductsList } = getState().add_products
+    const { amount } = getState().add_products.addProductsList[id]
+    const { price } = getState().products.allProducts[id]
+    // const allPrice = price * amount
+    return (
+      delete addProductsList[id],
+      dispatch({
+        type: DEL_ALL_POSITION,
+        addProductsList,
+        amount,
+        price: price* amount
       })
     )
   }

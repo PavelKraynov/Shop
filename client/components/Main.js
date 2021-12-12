@@ -8,7 +8,8 @@ import { AllProductFromServer} from '../redux/reducers/products'
 
 
 const Main = () => {
-  const listOfProducts = useSelector((s) => s.products.allProducts)
+  const { allProducts } = useSelector((s) => s.products)
+
 
 
   const dispatch = useDispatch()
@@ -18,22 +19,22 @@ const Main = () => {
 
   return (
     <div>
-      <Head title="Hello" />
+      <Head  />
       <div className="wrapper-space-of-products">
-      {Object.values(listOfProducts).map((objOfProduct) => {
-        const idForKey = Math.random().toString(32).substr(2, 12)
-        return (
-          <div key={idForKey}>
-            <CardOfGood
-              title={objOfProduct.title}
-              image={objOfProduct.image}
-              price={objOfProduct.price}
-              id={objOfProduct.id}
-              // productCurrency={productCurrency}
-            />
-          </div>
-        )
-      })}
+        {Object.values(allProducts).map((objOfProduct) => {
+          const idForKey = Math.random().toString(32).substr(2, 12)
+          return (
+            <div key={idForKey}>
+              <CardOfGood
+                title={objOfProduct.title}
+                image={objOfProduct.image}
+                price={objOfProduct.price}
+                id={objOfProduct.id}
+                // productCurrency={productCurrency}
+              />
+            </div>
+          )
+        })}
       </div>
     </div>
   )
