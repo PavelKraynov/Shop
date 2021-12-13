@@ -1,19 +1,23 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 
 import './Head.css'
 
-import { functionOfGettingCurrency, functionSort } from '../redux/reducers/products'
+import { functionOfGettingCurrency, sortFunction } from '../redux/reducers/products'
 
-const Head = (props) => {
+const Head = () => {
 
-console.log(props)
   const dispatch = useDispatch()
 
   const { allAmount, allProductPrice } = useSelector((s) => s.add_products)
-  const { currencyOfProduct, order } = useSelector((store) => store.products)
+  const { currencyOfProduct } = useSelector((store) => store.products)
 const allPrice = (allProductPrice * currencyOfProduct[1]).toFixed(2)
+
+const [toggled, setToggled] = useState({
+  name: true,
+  price: true
+})
 
 const moneyValue = ['USD', 'EUR', 'CAD']
 
@@ -22,8 +26,18 @@ const onClickButtonForCurrencyPrice = (money) => {
 }
 
 
-const clickSortByPriceOrName = (price, orderSorted ) => {
-  return dispatch(functionSort(price, orderSorted * -1))
+const clickSortByNameOrPrice = (sortType )=> {
+  if (sortType === 'name') {
+    setToggled((prev) => ({ ...prev, name: !prev.name }))
+    console.log(toggled)
+    return dispatch(sortFunction(sortType, toggled.name))
+  }
+  if (sortType === 'price') {
+    setToggled((prev) => ({ ...prev, price: !prev.price }))
+    console.log(toggled)
+    return dispatch(sortFunction(sortType, toggled.price))
+  }
+  return console.log('error code')
 }
   return (
     <div className="head-wrapper">
@@ -46,20 +60,20 @@ const clickSortByPriceOrName = (price, orderSorted ) => {
       </div>
       <div className="head-wrapper__sort">
         <button
-          onClick={() => clickSortByPriceOrName('price', order)}
+          onClick={() => clickSortByNameOrPrice('price')}
           className="head-wrapper__sort-button"
           id="sort-price"
           type="button"
         >
-          Sort-price
+          Sort-price<span>{toggled.price ? '⇑' : '⇓'}</span>
         </button>
         <button
-          onClick={() => clickSortByPriceOrName('name', order)}
+          onClick={() => clickSortByNameOrPrice('name')}
           className="head-wrapper__sort-button"
           id="sort-name"
           type="button"
         >
-          Sort-name
+          Sort-name<span>{toggled.name ? '⇑' : '⇓'}</span>
         </button>
       </div>
       <div className="head-wrapper__price-with-button">

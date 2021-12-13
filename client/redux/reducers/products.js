@@ -40,11 +40,6 @@ export function AllProductFromServer() {
   return (dispatch) => {
     return axios('/api/v1/goods')
       .then((result) => result.data)
-      .then((resultOfData) => {
-        return resultOfData.filter((it, index) => {
-          return index < 10
-        })
-      })
       .then((products) => {
         return products.reduce((acc, rec) => {
           acc[rec.id] = rec
@@ -95,5 +90,31 @@ export function functionSort(price, order) {
       return { ...acc, [product.id]: product }
     }, {})
     return dispatch({ type: SORT_BY_PRICE, resultOfSortArray: objSortArray, order })
+  }
+}
+
+
+export function sortFunction(sortType, direction) {
+  return (dispatch) => {
+    return fetch('/api/v1/sort', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ sortType, direction })
+    })
+      .then((result) => result.json())
+      .then((products) => {
+        return products.reduce((acc, rec) => {
+          acc[rec.id] = rec
+          return acc
+        }, {})
+      })
+      .then((reduceObj) =>
+        dispatch({
+          type: GET_PRODUCTS,
+          objProd: reduceObj
+        })
+      )
   }
 }

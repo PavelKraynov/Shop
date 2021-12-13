@@ -9,7 +9,8 @@ import cookieParser from 'cookie-parser'
 import config from './config'
 import Html from '../client/html'
 
-const { writeFile, readFile } = require('fs').promises
+import { sortProductList, getProductList, rates } from './common'
+
 
 require('colors')
 
@@ -36,25 +37,28 @@ const middleware = [
 
 middleware.forEach((it) => server.use(it))
 
-const url =
-  'https://raw.githubusercontent.com/ovasylenko/skillcrcuial-ecommerce-test-data/master/data.json'
+
 
 server.get('/api/v1/goods', async (req, res) => {
-  const allGoods = await readFile(`${__dirname}/goods.json`, { encoding: 'utf8' })
-    .then((goods) => JSON.parse(goods))
-    .catch(async () => {
-      const goods = await axios(url).then((result) => result.data)
-      return writeFile(`${__dirname}/goods.json`, JSON.stringify(goods), { encoding: 'utf8' })
-        .then((data) => data)
-        .catch((err) => err)
-    })
-  res.send(allGoods)
+  const allGoods = await getProductList()
+  res.send(allGoods.slice(0, 50))
 })
 
-const urlValue = 'https://api.exchangerate.host/latest?base=USD&symbols=USD,EUR,CAD'
-server.get('/api/v1/base', async (req, res) => {
-  const baseCurrency = await axios(urlValue).then((result) => result.data)
-  res.send(baseCurrency)
+
+
+server.post('/api/v1/sort', async(req, res) => {
+  const arrayOfAllProducts = await getProductList()
+  const { sortType, direction } = req.body
+  const sortArray = sortProductList(arrayOfAllProducts, sortType, direction)
+  res.send(sortArray.slice(0, 50))
+})
+
+
+server.get('/api/v1/currency', async (req, res) => {
+  const baseCurrency = await axios(rates.urlValue)
+  .then((result) => result.data)
+  .catch(() => rates.mokRates)
+  res.json({baseCurrency})
 })
 
 server.use('/api/goods', (req, res) => {

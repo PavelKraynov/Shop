@@ -14,7 +14,8 @@ const Main = () => {
 
   const dispatch = useDispatch()
   useEffect(()=> {
-    dispatch(AllProductFromServer())
+   dispatch(AllProductFromServer())
+    localStorage.setItem('locale-started', new Date())
   },[])
 
   return (
