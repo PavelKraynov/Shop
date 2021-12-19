@@ -8,14 +8,14 @@ import { AllProductFromServer} from '../redux/reducers/products'
 
 
 const Main = () => {
-  const { allProducts } = useSelector((s) => s.products)
-
-
+  const { allProducts, loaded } = useSelector((s) => s.products)
 
   const dispatch = useDispatch()
   useEffect(()=> {
-   dispatch(AllProductFromServer())
+    if (!loaded){
+     dispatch(AllProductFromServer())
     localStorage.setItem('locale-started', new Date())
+    }
   },[])
 
   return (

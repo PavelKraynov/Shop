@@ -2,12 +2,18 @@ import axios from 'axios'
 
 const GET_PRODUCTS = 'GET_PRODUCTS'
 const CURRENCY_OF_PRODUCT = 'CURRENCY_OF_PRODUCT'
-const SORT_BY_PRICE = 'SORT_BY_PRICE'
+const SORT_BY = 'SORT_BY'
+const REPLACE_SORT = 'REPLACE_SORT'
 
 const initialState = {
+  sortType : '',
+  loaded: false,
   allProducts: {},
   currencyOfProduct: ['USD', 1],
-  order: 1
+  sort: {
+    name: true,
+    price: true
+  }
 }
 
 export default (state = initialState, action) => {
@@ -15,7 +21,8 @@ export default (state = initialState, action) => {
     case GET_PRODUCTS: {
       return {
         ...state,
-        allProducts: action.objProd
+        allProducts: action.objProd.reduceObj,
+        loaded: action.objProd.load,
       }
     }
     case CURRENCY_OF_PRODUCT: {
@@ -24,11 +31,17 @@ export default (state = initialState, action) => {
         currencyOfProduct: action.currencyValue
       }
     }
-    case SORT_BY_PRICE: {
+    case SORT_BY: {
       return {
         ...state,
-        allProducts: action.resultOfSortArray,
-        order: action.order
+        allProducts: action.objProd.reduceObj,
+        sortType: action.objProd.sortType
+      }
+    }
+    case REPLACE_SORT: {
+      return {
+        ...state,
+        sort: action.sort,
       }
     }
     default:
@@ -49,7 +62,7 @@ export function AllProductFromServer() {
       .then((reduceObj) =>
         dispatch({
           type: GET_PRODUCTS,
-          objProd: reduceObj
+          objProd: { reduceObj, load : true }
         })
       )
   }
@@ -57,8 +70,10 @@ export function AllProductFromServer() {
 
 export function functionOfGettingCurrency(money) {
   return (dispatch) => {
-    return axios('/api/v1/base')
-      .then((resultRates) => resultRates.data.rates)
+    return axios('/api/v1/currency')
+      .then((resultRates) => {
+        return resultRates.data.currency.rates
+      })
       .then((dataResultValues) => {
         const result = Object.entries(dataResultValues).reduce((acc, rec) => {
           if (rec.indexOf(money) > -1) {
@@ -71,28 +86,6 @@ export function functionOfGettingCurrency(money) {
       .then((valuesKey) => dispatch({ type: CURRENCY_OF_PRODUCT, currencyValue: valuesKey }))
   }
 }
-
-export function functionSort(price, order) {
-  return (dispatch, getState) => {
-    const store = getState()
-    console.log(order)
-    const arrayOfAllProducts = store.products.allProducts
-
-    const sortArrayOfPrice = Object.values(arrayOfAllProducts).sort(
-      (prev, next) => {
-        if(price === 'price'){
-        return order * (prev.price - next.price)
-        }
-        return order * prev.title.localeCompare(next.title)
-      }
-    )
-    const objSortArray = sortArrayOfPrice.reduce((acc, product) => {
-      return { ...acc, [product.id]: product }
-    }, {})
-    return dispatch({ type: SORT_BY_PRICE, resultOfSortArray: objSortArray, order })
-  }
-}
-
 
 export function sortFunction(sortType, direction) {
   return (dispatch) => {
@@ -112,9 +105,28 @@ export function sortFunction(sortType, direction) {
       })
       .then((reduceObj) =>
         dispatch({
-          type: GET_PRODUCTS,
-          objProd: reduceObj
+          type: SORT_BY,
+          objProd: {reduceObj, sortType}
         })
       )
+  }
+}
+
+export function buttonSortArrow(replace){
+  return (dispatch, getState) => {
+    const { sort } = getState().products
+    if (replace === 'name') {
+      return dispatch({
+        type: REPLACE_SORT,
+        sort: { ...sort, name: !sort.name }
+      })
+    }
+    if (replace === 'price') {
+      return dispatch({
+        type: REPLACE_SORT,
+        sort: { ...sort, price: !sort.price }
+      })
+    }
+    return sort
   }
 }

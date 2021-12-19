@@ -2,15 +2,17 @@ import React from "react";
 
 import { useSelector, useDispatch } from "react-redux";
 
-import { addProducts, deletedProdFunc, deletedProdPosition } from '../redux/reducers/add_products'
+import { addProductsInBusket, deletedProdFunc, deletedProdPosition } from '../redux/reducers/add_products'
+
+
 
 const TrRowProduct = ({ id, index }) => {
   const dispatch = useDispatch()
-  const { currencyOfProduct, allProducts } = useSelector((store) => store.products)
+  const { currencyOfProduct } = useSelector((store) => store.products)
   const { addProductsList } = useSelector((s) => s.add_products)
-  const price = (allProducts[id].price * currencyOfProduct[1]).toFixed(2)
+  const price = (addProductsList[id].price * currencyOfProduct[1]).toFixed(2)
   const addProductButtonClick = () => {
-    dispatch(addProducts(id))
+    dispatch(addProductsInBusket(id))
   }
 
   const deletedProdClick = () => {
@@ -24,9 +26,9 @@ const TrRowProduct = ({ id, index }) => {
     <tr>
       <th>{index + 1}</th>
       <th>
-        <img className="tr-img-product" src={allProducts[id].image} alt="product" />
+        <img className="tr-img-product" src={addProductsList[id].image} alt="product" />
       </th>
-      <th>title{allProducts[id].title}</th>
+      <th>{addProductsList[id].title}</th>
       <th>
         {price} {currencyOfProduct[0]}
       </th>

@@ -1,10 +1,14 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 
 import './Head.css'
 
-import { functionOfGettingCurrency, sortFunction } from '../redux/reducers/products'
+import {
+  functionOfGettingCurrency,
+  sortFunction,
+  buttonSortArrow
+} from '../redux/reducers/products'
 
 const Head = () => {
 
@@ -12,12 +16,9 @@ const Head = () => {
 
   const { allAmount, allProductPrice } = useSelector((s) => s.add_products)
   const { currencyOfProduct } = useSelector((store) => store.products)
-const allPrice = (allProductPrice * currencyOfProduct[1]).toFixed(2)
+  const { sort } = useSelector((store) => store.products)
 
-const [toggled, setToggled] = useState({
-  name: true,
-  price: true
-})
+  const allPrice = (allProductPrice * currencyOfProduct[1]).toFixed(2)
 
 const moneyValue = ['USD', 'EUR', 'CAD']
 
@@ -28,14 +29,12 @@ const onClickButtonForCurrencyPrice = (money) => {
 
 const clickSortByNameOrPrice = (sortType )=> {
   if (sortType === 'name') {
-    setToggled((prev) => ({ ...prev, name: !prev.name }))
-    console.log(toggled)
-    return dispatch(sortFunction(sortType, toggled.name))
+    dispatch(buttonSortArrow(sortType))
+    return dispatch(sortFunction(sortType, sort.name))
   }
   if (sortType === 'price') {
-    setToggled((prev) => ({ ...prev, price: !prev.price }))
-    console.log(toggled)
-    return dispatch(sortFunction(sortType, toggled.price))
+    dispatch(buttonSortArrow(sortType))
+    return dispatch(sortFunction(sortType, sort.price))
   }
   return console.log('error code')
 }
@@ -65,7 +64,7 @@ const clickSortByNameOrPrice = (sortType )=> {
           id="sort-price"
           type="button"
         >
-          Sort-price<span>{toggled.price ? '⇑' : '⇓'}</span>
+          Sort-price<span>{sort.price ? ' ⇑' : ' ⇓'}</span>
         </button>
         <button
           onClick={() => clickSortByNameOrPrice('name')}
@@ -73,7 +72,7 @@ const clickSortByNameOrPrice = (sortType )=> {
           id="sort-name"
           type="button"
         >
-          Sort-name<span>{toggled.name ? '⇑' : '⇓'}</span>
+          Sort-name<span>{sort.name ? ' ⇑' : ' ⇓'}</span>
         </button>
       </div>
       <div className="head-wrapper__price-with-button">

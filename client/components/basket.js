@@ -16,7 +16,7 @@ const Basket = () => {
   return (
     <div>
       <Head />
-      <BasketProduct data={Object.keys(addProductsList)} />
+      <BasketProduct data={Object.values(addProductsList)} />
       <hr />
       <div className="product-in-basket-all-price">
         all for all product {allPrice} {currencyOfProduct[0]}

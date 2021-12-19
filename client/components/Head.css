@@ -2,6 +2,7 @@
   display:flex;
   background:rgb(116, 203, 238);
   justify-content: space-between;
+  align-items: center;
   color:aquamarine;
 
 }
@@ -31,10 +32,8 @@
 
 .head-wrapper__sort{
   display: flex;
-   /* background:rgb(176, 179, 16); */
-   width: 190px;
-   justify-content: space-between;
-  border-radius: 5px;
+   width: 250px;
+
 }
 
 .head-wrapper__sort-button{
@@ -42,7 +41,6 @@
   border-radius: 5px;
    margin: 4px;
     padding: 2px;
-   border-radius: 5px;
 }
 .head-wrapper__price-with-button{
   color: rgb(32, 42, 51);

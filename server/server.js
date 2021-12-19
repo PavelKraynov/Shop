@@ -54,11 +54,22 @@ server.post('/api/v1/sort', async(req, res) => {
 })
 
 
-server.get('/api/v1/currency', async (req, res) => {
-  const baseCurrency = await axios(rates.urlValue)
-  .then((result) => result.data)
-  .catch(() => rates.mokRates)
-  res.json({baseCurrency})
+let ratesNumber = 0
+const msAtHour = 1000 * 60 * 60
+let currency = {}
+
+server.get('/api/v1/currency', async(req, res) => {
+  let currencyDate = +new Date()
+  if ((ratesNumber + msAtHour ) <= currencyDate) {
+    ratesNumber = currencyDate
+
+    currency = await axios(rates.urlValue)
+      .then((result) => {
+       return result.data
+      })
+      .catch(() => console.log('need to fix', rates.mokRates))
+  }
+  res.json({ currency })
 })
 
 server.use('/api/goods', (req, res) => {
