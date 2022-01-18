@@ -7,6 +7,7 @@ import store, { history } from '../redux'
 
 import Main from '../components/Main'
 import Basket from '../components/basket'
+import Logs from '../components/logs'
 import NotFound from '../components/404'
 
 import Startup from './startup'
@@ -47,9 +48,11 @@ const RootComponent = (props) => {
     <Provider store={store}>
       <RouterSelector history={history} location={props.location} context={props.context}>
         <Startup>
+
           <Switch>
             <Route exact path="/" component={Main} />
             <Route exact path="/basket" component={Basket} />
+            <Route exact path="/logs" component={Logs} />
             {/* <Route exact path="/dashboard" component={Home} /> */}
             <PrivateRoute exact path="/hidden-route" component={Main} />
             <OnlyAnonymousRoute exact path="/anonymous-route" component={Main} />

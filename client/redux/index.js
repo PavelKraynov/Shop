@@ -6,7 +6,8 @@ import SockJS from 'sockjs-client'
 
 import rootReducer from './reducers'
 import createHistory from './history'
-import socketActions from './sockets'
+import socketActions from './middleware/socket'
+import logging from './middleware/logging'
 
 export const history = createHistory()
 
@@ -14,7 +15,7 @@ const isBrowser = typeof window !== 'undefined'
 
 const initialState = {}
 const enhancers = []
-const middleware = [thunk, routerMiddleware(history)]
+const middleware = [thunk, logging, routerMiddleware(history)]
 
 const composeFunc = process.env.NODE_ENV === 'development' ? composeWithDevTools : compose
 

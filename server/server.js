@@ -54,6 +54,7 @@ server.post('/api/v1/sort', async(req, res) => {
 })
 
 
+
 let ratesNumber = 0
 const msAtHour = 1000 * 60 * 60
 let currency = {}
@@ -70,6 +71,17 @@ server.get('/api/v1/currency', async(req, res) => {
       .catch(() => console.log('need to fix', rates.mokRates))
   }
   res.json({ currency })
+})
+
+let logs = []
+
+server.get('/api/v1/logs', (req, res) => {
+  res.json(logs)
+})
+
+server.post('/api/v1/logs', (req, res) => {
+   logs  = req.body.logs
+   res.json(logs)
 })
 
 server.use('/api/goods', (req, res) => {

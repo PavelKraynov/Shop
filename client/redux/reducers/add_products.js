@@ -1,10 +1,10 @@
-const ADD_PRODUCTS = 'ADD_PRODUCTS'
+export const ADD_PRODUCTS = '@add_products/ADD_PRODUCTS'
 
-const ADD_PRODUCTS_IN_BUSKET = 'ADD_PRODUCTS_IN_BUSKET'
+export const ADD_PRODUCTS_IN_BUSKET = '@add_products/ADD_PRODUCTS_IN_BUSKET'
 
-const DELETED_AMOUNT_PRODUCTS_TO_BASKET = 'DELETED_AMOUNT_PRODUCTS_TO_BASKET'
-const DELETED_PRODUCTS = 'DELETED_PRODUCTS'
-const DEL_ALL_POSITION = 'DEL_ALL_POSITION'
+const DELETED_AMOUNT_PRODUCTS_TO_BASKET = '@add_products/DELETED_AMOUNT_PRODUCTS_TO_BASKET'
+const DELETED_PRODUCTS = '@add_products/DELETED_PRODUCTS'
+export const DEL_ALL_POSITION = '@add_products/DEL_ALL_POSITION'
 
 
 const initialState = {
@@ -64,7 +64,7 @@ export default (state = initialState, action) => {
 export function addProducts(id) {
   return (dispatch, getState) => {
     const productsList = getState().products.allProducts
-    const { price } = productsList[id]
+    const { price, title } = productsList[id]
     const { addProductsList } = getState().add_products
     const totalAmount = typeof addProductsList[id] === 'undefined' ? 1 : addProductsList[id].amount += 1
 
@@ -75,7 +75,8 @@ export function addProducts(id) {
           ...addProductsList,
           [id]: { ...productsList[id], amount: totalAmount }
         },
-        price
+        price,
+        title
       }
     })
   }
@@ -85,7 +86,7 @@ export function addProducts(id) {
 export function addProductsInBusket(id) {
   return (dispatch, getState) => {
     const { addProductsList } = getState().add_products
-    const { price } = addProductsList[id]
+    const { price, title} = addProductsList[id]
     const totalAmount =
       typeof addProductsList[id] === 'undefined' ? 1 : (addProductsList[id].amount += 1)
 
@@ -96,7 +97,8 @@ export function addProductsInBusket(id) {
           ...addProductsList,
           [id]: { ...addProductsList[id], amount: totalAmount }
         },
-        price
+        price,
+        title
       }
     })
   }
@@ -132,16 +134,15 @@ export function deletedProdFunc(id) {
 export function deletedProdPosition(id) {
   return (dispatch, getState) => {
     const { addProductsList } = getState().add_products
-    const { amount } = getState().add_products.addProductsList[id]
-    const { price } = getState().add_products.addProductsList[id]
-    // const allPrice = price * amount
+    const { amount, price, title } = getState().add_products.addProductsList[id]
     return (
       delete addProductsList[id],
       dispatch({
         type: DEL_ALL_POSITION,
         addProductsList,
         amount,
-        price: price* amount
+        price: price* amount,
+        title
       })
     )
   }

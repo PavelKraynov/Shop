@@ -1,9 +1,9 @@
 import axios from 'axios'
 
-const GET_PRODUCTS = 'GET_PRODUCTS'
-const CURRENCY_OF_PRODUCT = 'CURRENCY_OF_PRODUCT'
-const SORT_BY = 'SORT_BY'
-const REPLACE_SORT = 'REPLACE_SORT'
+export const CURRENCY_OF_PRODUCT = '@products/CURRENCY_OF_PRODUCT'
+export const SORT_BY = '@products/SORT_BY'
+const GET_PRODUCTS = '@products/GET_PRODUCTS'
+const REPLACE_SORT = '@products/REPLACE_SORT'
 
 const initialState = {
   sortType : '',
@@ -28,7 +28,7 @@ export default (state = initialState, action) => {
     case CURRENCY_OF_PRODUCT: {
       return {
         ...state,
-        currencyOfProduct: action.currencyValue
+        currencyOfProduct: action.payload.currencyValue
       }
     }
     case SORT_BY: {
@@ -69,7 +69,9 @@ export function AllProductFromServer() {
 }
 
 export function functionOfGettingCurrency(money) {
-  return (dispatch) => {
+  return (dispatch, getState) => {
+    const { currencyOfProduct } = getState().products
+    const value = currencyOfProduct[0]
     return axios('/api/v1/currency')
       .then((resultRates) => {
         return resultRates.data.currency.rates
@@ -83,7 +85,18 @@ export function functionOfGettingCurrency(money) {
         }, [])
         return result
       })
-      .then((valuesKey) => dispatch({ type: CURRENCY_OF_PRODUCT, currencyValue: valuesKey }))
+      .then((valuesKey) => {
+        if (valuesKey[0] !== value){
+          return dispatch({
+            type: CURRENCY_OF_PRODUCT,
+            payload: {
+              currencyValue: valuesKey
+            }
+          })
+        }
+        return value
+      }
+    )
   }
 }
 
